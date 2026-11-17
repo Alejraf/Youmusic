@@ -6,7 +6,6 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 const YOUTUBE_API_KEY = process.env.YOUTUBE_API_KEY;
 
-// Busca index.html automáticamente en raíz, /public o subcarpetas
 function findIndexFile(dir) {
   const entries = fs.readdirSync(dir, { withFileTypes: true });
   for (const entry of entries) {
@@ -27,7 +26,6 @@ if (indexFilePath) {
   app.use(express.static(path.dirname(indexFilePath)));
 }
 
-// Endpoint seguro para buscar en YouTube sin exponer la API Key
 app.get("/api/search", async (req, res) => {
   const query = (req.query.q || "").trim();
   if (!query) return res.status(400).json({ error: "Falta el término de búsqueda." });
@@ -55,15 +53,14 @@ app.get("/api/search", async (req, res) => {
   }
 });
 
-// Entrega el reproductor o muestra qué archivos ve Render si falta index.html
 app.get("*", (req, res) => {
   if (indexFilePath) {
     return res.sendFile(indexFilePath);
   }
   const files = fs.readdirSync(__dirname);
-  res.status(404).send(`No se encontró index.html. Archivos actuales en Render: ${files.join(", ")}`);
+  res.status(404).send(`No se encontró index.html. Archivos actuales: ${files.join(", ")}`);
 });
 
 app.listen(PORT, () => {
-  console.log(`Servidor activo en puerto ${PORT}. HTML encontrado: ${indexFilePath || "NINGUNO"}`);
+  console.log(`Servidor activo en puerto ${PORT}`);
 });

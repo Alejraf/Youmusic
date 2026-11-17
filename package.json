@@ -1,7 +1,7 @@
 {
-  "name": "streamtube-player",
-  "version": "1.0.0",
-  "description": "Reproductor multimedia con busqueda de YouTube y backend seguro para Render",
+  "name": "streamfocus-player",
+  "version": "1.1.0",
+  "description": "Reproductor multimedia con listas locales, temporizador de sueno y vista limpia",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
