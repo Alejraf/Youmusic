@@ -1,7 +1,7 @@
 {
   "name": "streamfocus-player",
-  "version": "1.1.0",
-  "description": "Reproductor multimedia con listas locales, temporizador de sueno y vista limpia",
+  "version": "1.2.0",
+  "description": "Plataforma de cursos y reproductor multimedia con vista limpia sin anuncios",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
