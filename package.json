@@ -1,7 +1,7 @@
 {
   "name": "streamfocus-player",
-  "version": "1.2.0",
-  "description": "Plataforma de cursos y reproductor multimedia con vista limpia sin anuncios",
+  "version": "1.4.0",
+  "description": "PWA de cursos y reproductor multimedia con sala limpia sin publicidad",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"

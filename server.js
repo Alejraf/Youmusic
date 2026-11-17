@@ -6,25 +6,23 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 const YOUTUBE_API_KEY = process.env.YOUTUBE_API_KEY;
 
-function findIndexFile(dir) {
+function findRootDir(dir) {
   const entries = fs.readdirSync(dir, { withFileTypes: true });
   for (const entry of entries) {
     if (entry.name === "node_modules" || entry.name.startsWith(".")) continue;
     const fullPath = path.join(dir, entry.name);
     if (entry.isDirectory()) {
-      const found = findIndexFile(fullPath);
+      const found = findRootDir(fullPath);
       if (found) return found;
     } else if (entry.name.toLowerCase() === "index.html") {
-      return fullPath;
+      return dir;
     }
   }
-  return null;
+  return __dirname;
 }
 
-const indexFilePath = findIndexFile(__dirname);
-if (indexFilePath) {
-  app.use(express.static(path.dirname(indexFilePath)));
-}
+const staticDir = findRootDir(__dirname);
+app.use(express.static(staticDir));
 
 app.get("/api/search", async (req, res) => {
   const query = (req.query.q || "").trim();
@@ -53,12 +51,12 @@ app.get("/api/search", async (req, res) => {
   }
 });
 
+app.get("/player", (req, res) => {
+  res.sendFile(path.join(staticDir, "player.html"));
+});
+
 app.get("*", (req, res) => {
-  if (indexFilePath) {
-    return res.sendFile(indexFilePath);
-  }
-  const files = fs.readdirSync(__dirname);
-  res.status(404).send(`No se encontró index.html. Archivos actuales: ${files.join(", ")}`);
+  res.sendFile(path.join(staticDir, "index.html"));
 });
 
 app.listen(PORT, () => {

@@ -1,15 +1,24 @@
 <!DOCTYPE html>
 <html lang="es">
-<head><script>(function(s){s.dataset.zone='12285935',s.src='https://nap5k.com/tag.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
+<head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>StreamFocus - Cursos y Reproductor</title>
+  <title>StreamFocus - Cursos y Buscador</title>
+
+  <!-- Configuración PWA para abrir en pantalla completa sin barra de Chrome -->
+  <link rel="manifest" href="/manifest.json" />
+  <meta name="theme-color" content="#0b0d13" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <link rel="icon" type="image/png" href="/icon-192.png" />
+  <link rel="apple-touch-icon" href="/icon-192.png" />
 
   <!-- =====================================================================
-       ZONA DE SCRIPT MONETAG (In-Page Push)
+       ZONA DE SCRIPT MONETAG (Solo en esta página inicial index.html)
        Pega aquí tu etiqueta <script> de Monetag.
-       Solo estará visible en la pantalla inicial (Home). Al pulsar Buscar o
-       abrir un curso, el bloqueador de vista limpia ocultará cualquier anuncio.
+       La página player.html NO tiene este script, por lo que al buscar o
+       abrir un video la sala estará 100% libre de anuncios.
        ===================================================================== -->
 
 
@@ -20,11 +29,9 @@
       --surface-hover: #1f2433;
       --primary: #00d285;
       --primary-text: #041a11;
-      --accent: #3b82f6;
       --text: #f3f4f6;
       --text-muted: #9ca3af;
       --border: #252a3a;
-      --danger: #ef4444;
     }
 
     * {
@@ -42,24 +49,6 @@
       flex-direction: column;
     }
 
-    /* =====================================================================
-       MODO REPRODUCCIÓN LIMPIA (Bloqueo estricto de anuncios superpuestos)
-       ===================================================================== */
-    body.clean-mode {
-      overflow: hidden;
-      background: #07080c;
-    }
-
-    body.clean-mode > *:not(#playerScreen):not(.modal-backdrop) {
-      display: none !important;
-      visibility: hidden !important;
-      opacity: 0 !important;
-      pointer-events: none !important;
-    }
-
-    /* =====================================================================
-       ABA 1: PANTALLA INICIAL CON BUSCADOR CENTRADO Y CURSOS PRECARGADOS
-       ===================================================================== */
     #homeScreen {
       display: flex;
       flex-direction: column;
@@ -67,18 +56,24 @@
       max-width: 760px;
       width: 100%;
       margin: 0 auto;
-      /* Espacio superior de seguridad (115px) para que el In-Page Push
-         de Monetag arriba nunca tape el buscador ni los botones */
-      padding-top: 112px;
+      padding-top: 135px;
     }
 
     .hero-center {
-      padding: 18px 18px 22px;
+      padding: 16px 18px 22px;
       display: flex;
       flex-direction: column;
       align-items: center;
       text-align: center;
       gap: 12px;
+    }
+
+    .top-badges {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
     }
 
     .brand-badge {
@@ -92,7 +87,20 @@
       border-radius: 999px;
       font-size: 0.8rem;
       font-weight: 700;
-      letter-spacing: 0.3px;
+    }
+
+    .install-app-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #1d2b45;
+      border: 1px solid #3b82f6;
+      color: #93c5fd;
+      padding: 6px 13px;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      cursor: pointer;
     }
 
     .hero-title {
@@ -166,13 +174,6 @@
       background: var(--primary);
       color: var(--primary-text);
       border-color: var(--primary);
-    }
-
-    .chip-btn.resume {
-      background: #1d2b45;
-      border-color: #3b82f6;
-      color: #93c5fd;
-      display: none;
     }
 
     .section-header {
@@ -283,6 +284,13 @@
       cursor: pointer;
     }
 
+    .status-msg {
+      text-align: center;
+      color: var(--text-muted);
+      padding: 24px 12px;
+      font-size: 0.86rem;
+    }
+
     footer {
       padding: 16px;
       text-align: center;
@@ -298,211 +306,6 @@
       cursor: pointer;
     }
 
-    /* =====================================================================
-       ABA 2: PANTALLA DEDICADA DE BÚSQUEDA Y REPRODUCCIÓN (Sin publicidad)
-       ===================================================================== */
-    #playerScreen {
-      display: none;
-      position: fixed;
-      inset: 0;
-      z-index: 2147483647;
-      background: #07080c;
-      flex-direction: column;
-      overflow-y: auto;
-    }
-
-    #playerScreen.active {
-      display: flex;
-    }
-
-    .player-topbar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 10px 14px;
-      background: #11141d;
-      border-bottom: 1px solid var(--border);
-      gap: 8px;
-      position: sticky;
-      top: 0;
-      z-index: 10;
-    }
-
-    .back-btn {
-      background: var(--surface-hover);
-      color: var(--text);
-      border: 1px solid var(--border);
-      padding: 8px 12px;
-      border-radius: 8px;
-      font-size: 0.82rem;
-      font-weight: 600;
-      cursor: pointer;
-      white-space: nowrap;
-    }
-
-    .timer-pill {
-      background: #192236;
-      color: #93c5fd;
-      border: 1px solid #2b3c61;
-      padding: 7px 11px;
-      border-radius: 8px;
-      font-size: 0.78rem;
-      font-weight: 600;
-      cursor: pointer;
-      white-space: nowrap;
-    }
-
-    /* Buscador rápido dentro de la aba limpia */
-    .inner-search {
-      display: flex;
-      gap: 6px;
-      padding: 8px 14px;
-      background: #0d1017;
-      border-bottom: 1px solid var(--border);
-    }
-
-    .inner-search input {
-      flex: 1;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      color: var(--text);
-      padding: 8px 12px;
-      border-radius: 8px;
-      font-size: 0.88rem;
-      outline: none;
-    }
-
-    .inner-search button {
-      background: var(--primary);
-      color: var(--primary-text);
-      border: none;
-      padding: 0 14px;
-      border-radius: 8px;
-      font-weight: 700;
-      font-size: 0.84rem;
-      cursor: pointer;
-    }
-
-    .player-box {
-      width: 100%;
-      max-width: 820px;
-      margin: 0 auto;
-      aspect-ratio: 16 / 9;
-      background: #000;
-      position: relative;
-    }
-
-    #player {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-    }
-
-    .player-panel {
-      max-width: 820px;
-      width: 100%;
-      margin: 0 auto;
-      padding: 12px 14px 36px;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-
-    .now-title {
-      font-size: 0.98rem;
-      font-weight: 700;
-      line-height: 1.35;
-    }
-
-    .now-channel {
-      font-size: 0.78rem;
-      color: var(--text-muted);
-      margin-top: -6px;
-    }
-
-    .player-controls {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      align-items: center;
-      justify-content: space-between;
-      background: var(--surface);
-      padding: 9px;
-      border-radius: 12px;
-      border: 1px solid var(--border);
-    }
-
-    .ctrl-group {
-      display: flex;
-      gap: 6px;
-      align-items: center;
-    }
-
-    .ctrl-btn {
-      background: var(--surface-hover);
-      border: 1px solid var(--border);
-      color: var(--text);
-      padding: 8px 11px;
-      border-radius: 8px;
-      font-size: 0.82rem;
-      font-weight: 600;
-      cursor: pointer;
-    }
-
-    .ctrl-btn.active {
-      background: var(--primary);
-      color: var(--primary-text);
-      border-color: var(--primary);
-    }
-
-    .notes-box {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 10px 12px;
-    }
-
-    .notes-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 6px;
-      font-size: 0.78rem;
-      font-weight: 600;
-      color: var(--text-muted);
-    }
-
-    .notes-box textarea {
-      width: 100%;
-      min-height: 64px;
-      background: var(--bg);
-      border: 1px solid var(--border);
-      color: var(--text);
-      border-radius: 8px;
-      padding: 8px 10px;
-      font-size: 0.84rem;
-      resize: vertical;
-      outline: none;
-    }
-
-    .list-heading {
-      font-size: 0.82rem;
-      font-weight: 700;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      letter-spacing: 0.4px;
-      margin-top: 4px;
-    }
-
-    .status-msg {
-      text-align: center;
-      color: var(--text-muted);
-      padding: 24px 12px;
-      font-size: 0.86rem;
-    }
-
-    /* Modales */
     .modal-backdrop {
       position: fixed;
       inset: 0;
@@ -511,7 +314,7 @@
       align-items: center;
       justify-content: center;
       padding: 16px;
-      z-index: 2147483647;
+      z-index: 9999;
     }
 
     .modal-backdrop.open {
@@ -525,8 +328,6 @@
       padding: 18px;
       max-width: 440px;
       width: 100%;
-      max-height: 82vh;
-      overflow-y: auto;
     }
 
     .modal-card h2 {
@@ -541,7 +342,7 @@
       margin-bottom: 8px;
     }
 
-    .modal-card ul {
+    .modal-card ul, .modal-card ol {
       padding-left: 18px;
       margin-bottom: 12px;
     }
@@ -550,24 +351,29 @@
       color: var(--primary);
     }
 
-    .timer-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 8px;
-      margin: 12px 0;
+    .ctrl-btn {
+      background: var(--primary);
+      border: none;
+      color: var(--primary-text);
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-size: 0.84rem;
+      font-weight: 700;
+      cursor: pointer;
     }
   </style>
 </head>
 <body>
 
-  <!-- =====================================================================
-       ABA 1: PANTALLA INICIAL (Buscador centrado + Cursos precargados)
-       ===================================================================== -->
   <div id="homeScreen">
     <section class="hero-center">
-      <div class="brand-badge">▶ StreamFocus · Aprende y Escucha</div>
+      <div class="top-badges">
+        <div class="brand-badge">▶ StreamFocus</div>
+        <button class="install-app-btn" id="installAppBtn">📲 Instalar como App</button>
+      </div>
+
       <h1 class="hero-title">Explora cursos gratuitos o busca cualquier video</h1>
-      <p class="hero-sub">Al buscar o abrir un video pasarás a una sala limpia sin anuncios flotantes.</p>
+      <p class="hero-sub">Al pulsar Buscar o abrir un curso pasarás a una sala limpia sin publicidad.</p>
 
       <form class="search-box-center" id="homeSearchForm">
         <input type="text" id="homeSearchInput" placeholder="Buscar cursos, música o tutoriales..." required />
@@ -575,7 +381,6 @@
       </form>
 
       <div class="quick-nav">
-        <button class="chip-btn resume" id="resumeVideoBtn">▶ Volver al reproductor</button>
         <button class="chip-btn active" data-cat="todos">Todos los cursos</button>
         <button class="chip-btn" data-cat="Programación">Programación</button>
         <button class="chip-btn" data-cat="Idiomas">Idiomas</button>
@@ -597,67 +402,18 @@
     </footer>
   </div>
 
-  <!-- =====================================================================
-       ABA 2: SALA DE REPRODUCCIÓN LIMPIA (Publicidad bloqueada aquí)
-       ===================================================================== -->
-  <section id="playerScreen" aria-label="Sala limpia de reproducción">
-    <div class="player-topbar">
-      <button class="back-btn" id="closePlayerBtn">← Inicio y Cursos</button>
-      <button class="timer-pill" id="openTimerBtn">⏱ Temporizador: OFF</button>
-    </div>
-
-    <form class="inner-search" id="innerSearchForm">
-      <input type="text" id="innerSearchInput" placeholder="Buscar otro video sin salir de la sala..." required />
-      <button type="submit">Buscar</button>
-    </form>
-
-    <div class="player-box">
-      <div id="player"></div>
-    </div>
-
-    <div class="player-panel">
-      <div class="now-title" id="nowTitle">Selecciona o busca un video</div>
-      <div class="now-channel" id="nowChannel"></div>
-
-      <div class="player-controls">
-        <div class="ctrl-group">
-          <button class="ctrl-btn" id="prevBtn">⏮ Ant</button>
-          <button class="ctrl-btn" id="playPauseBtn">⏯</button>
-          <button class="ctrl-btn" id="nextBtn">Sig ⏭</button>
-        </div>
-        <div class="ctrl-group">
-          <button class="ctrl-btn" id="saveCurrentFavBtn">☆ Guardar</button>
-          <button class="ctrl-btn active" id="autoPlayBtn">🔁 Auto: ON</button>
-        </div>
-      </div>
-
-      <div class="notes-box">
-        <div class="notes-header">
-          <span>📝 Apuntes de esta clase / video (guardados en tu teléfono)</span>
-          <span id="noteSavedTag" style="color: var(--primary);"></span>
-        </div>
-        <textarea id="videoNoteInput" placeholder="Escribe notas rápidas mientras ves el video..."></textarea>
-      </div>
-
-      <div class="list-heading" id="playerListHeading">Resultados y cola continua</div>
-      <div id="playerQueueList" class="courses-container" style="padding: 0;"></div>
-    </div>
-  </section>
-
-  <!-- Modal Temporizador -->
-  <div class="modal-backdrop" id="timerModal">
+  <!-- Modal instrucciones de instalación -->
+  <div class="modal-backdrop" id="installHelpModal">
     <div class="modal-card">
-      <h2>⏱ Temporizador de apagado automático</h2>
-      <p>Pausa el video automáticamente cuando termine el tiempo elegido.</p>
-      <div class="timer-grid">
-        <button class="ctrl-btn" data-mins="15">15 minutos</button>
-        <button class="ctrl-btn" data-mins="30">30 minutos</button>
-        <button class="ctrl-btn" data-mins="45">45 minutos</button>
-        <button class="ctrl-btn" data-mins="60">60 minutos</button>
-      </div>
-      <div style="display: flex; justify-content: space-between; gap: 8px; margin-top: 10px;">
-        <button class="ctrl-btn" id="cancelTimerBtn" style="color: var(--danger);">Desactivar</button>
-        <button class="ctrl-btn active" id="closeTimerModalBtn">Cerrar</button>
+      <h2>📲 Abrir sin la barra de Chrome</h2>
+      <p>Para que funcione como una app nativa sin buscador de Google arriba:</p>
+      <ol>
+        <li>Toca los <strong>3 puntos (⋮)</strong> arriba a la derecha en Chrome.</li>
+        <li>Selecciona <strong>"Agregar a la pantalla principal"</strong> o <strong>"Instalar aplicación"</strong>.</li>
+        <li>Pulsa <strong>Instalar</strong> y abre el ícono <strong>StreamFocus</strong> desde tu escritorio.</li>
+      </ol>
+      <div style="display: flex; justify-content: flex-end;">
+        <button class="ctrl-btn" id="closeInstallHelpBtn">Entendido</button>
       </div>
     </div>
   </div>
@@ -675,7 +431,7 @@
         <li>No se permite la descarga de videos ni la reproducción en segundo plano.</li>
       </ul>
       <div style="display: flex; justify-content: flex-end;">
-        <button class="ctrl-btn active" id="closeLegalBtn">Entendido</button>
+        <button class="ctrl-btn" id="closeLegalBtn">Entendido</button>
       </div>
     </div>
   </div>
@@ -684,7 +440,47 @@
     localStorage.removeItem("yt_api_key");
 
     // =====================================================================
-    // CURSOS PRECARGADOS (Cero consumo de cuota API al abrir la app)
+    // SOPORTE PWA (Modo App independiente sin barra de Chrome)
+    // =====================================================================
+    let deferredInstallPrompt = null;
+    const installBtn = document.getElementById("installAppBtn");
+    const installHelpModal = document.getElementById("installHelpModal");
+
+    // Si ya está abierta como app instalada (standalone), ocultamos el botón
+    if (window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone === true) {
+      installBtn.style.display = "none";
+    }
+
+    window.addEventListener("beforeinstallprompt", (e) => {
+      e.preventDefault();
+      deferredInstallPrompt = e;
+      installBtn.style.display = "inline-flex";
+    });
+
+    window.addEventListener("appinstalled", () => {
+      deferredInstallPrompt = null;
+      installBtn.style.display = "none";
+    });
+
+    installBtn.onclick = async () => {
+      if (deferredInstallPrompt) {
+        deferredInstallPrompt.prompt();
+        const choice = await deferredInstallPrompt.userChoice;
+        if (choice.outcome === "accepted") {
+          installBtn.style.display = "none";
+        }
+        deferredInstallPrompt = null;
+      } else {
+        installHelpModal.classList.add("open");
+      }
+    };
+
+    document.getElementById("closeInstallHelpBtn").onclick = () => {
+      installHelpModal.classList.remove("open");
+    };
+
+    // =====================================================================
+    // CURSOS PRECARGADOS Y NAVEGACIÓN A SALA LIMPIA
     // =====================================================================
     const PRELOADED_COURSES = [
       {
@@ -723,7 +519,7 @@
         thumbnail: "https://i.ytimg.com/vi/M7lc1UVf-VE/mqdefault.jpg"
       },
       {
-        id: "2942bb12340",
+        id: "YqQx75OPRa0",
         category: "Diseño",
         title: "Curso Completo de Diseño Gráfico y Composición Visual",
         channel: "Academia de Diseño",
@@ -744,232 +540,26 @@
         thumbnail: "https://i.ytimg.com/vi/jfKfPfyJRdk/mqdefault.jpg"
       }
     ];
-    // Ajuste de ID válido para el curso de diseño
-    PRELOADED_COURSES[5].id = "YqQx75OPRa0";
 
-    let player = null;
-    let isPlayerReady = false;
-    let autoPlayEnabled = true;
-
-    let queue = [];
-    let currentIndex = -1;
     let currentCategory = "todos";
     let favorites = JSON.parse(localStorage.getItem("sf_favorites") || "[]");
-    let notesMap = JSON.parse(localStorage.getItem("sf_notes") || "{}");
 
-    let sleepTimerId = null;
-    let sleepRemainingSec = 0;
-
-    // =====================================================================
-    // 1. BLOQUEADOR ACTIVO DE PUBLICIDAD EN LA ABA DE REPRODUCCIÓN
-    //    Oculta incluso elementos inyectados por JS con z-index máximo
-    // =====================================================================
-    function enforceAdVisibility() {
-      const isClean = document.body.classList.contains("clean-mode");
-      const allowedIds = new Set(["homeScreen", "playerScreen", "timerModal", "legalModal"]);
-
-      Array.from(document.body.children).forEach((el) => {
-        if (el.tagName === "SCRIPT" || el.tagName === "STYLE") return;
-        if (allowedIds.has(el.id)) return;
-
-        if (isClean) {
-          el.style.setProperty("display", "none", "important");
-          el.style.setProperty("visibility", "hidden", "important");
-          el.style.setProperty("opacity", "0", "important");
-          el.style.setProperty("pointer-events", "none", "important");
-        } else {
-          el.style.removeProperty("display");
-          el.style.removeProperty("visibility");
-          el.style.removeProperty("opacity");
-          el.style.removeProperty("pointer-events");
-        }
-      });
+    function goToPlayerSearch(query) {
+      window.location.assign(`/player.html?q=${encodeURIComponent(query)}`);
     }
 
-    const adObserver = new MutationObserver(() => {
-      if (document.body.classList.contains("clean-mode")) {
-        enforceAdVisibility();
-      }
+    function goToPlayerList(list, index) {
+      sessionStorage.setItem("sf_active_queue", JSON.stringify(list));
+      sessionStorage.setItem("sf_active_index", String(index));
+      window.location.assign("/player.html?mode=list");
+    }
+
+    document.getElementById("homeSearchForm").addEventListener("submit", (e) => {
+      e.preventDefault();
+      const q = document.getElementById("homeSearchInput").value.trim();
+      if (q) goToPlayerSearch(q);
     });
-    adObserver.observe(document.body, { childList: true, subtree: false });
 
-    function openCleanTab() {
-      document.body.classList.add("clean-mode");
-      document.getElementById("playerScreen").classList.add("active");
-      document.getElementById("resumeVideoBtn").style.display = "inline-block";
-      enforceAdVisibility();
-      window.scrollTo(0, 0);
-    }
-
-    function closeCleanTab() {
-      document.body.classList.remove("clean-mode");
-      document.getElementById("playerScreen").classList.remove("active");
-      if (isPlayerReady && player && typeof player.pauseVideo === "function") {
-        player.pauseVideo();
-      }
-      enforceAdVisibility();
-    }
-
-    document.getElementById("closePlayerBtn").onclick = closeCleanTab;
-    document.getElementById("resumeVideoBtn").onclick = () => {
-      openCleanTab();
-      if (isPlayerReady && player && typeof player.playVideo === "function") {
-        player.playVideo();
-      }
-    };
-
-    // =====================================================================
-    // 2. CARGA DE YOUTUBE IFRAME PLAYER API
-    // =====================================================================
-    const tag = document.createElement("script");
-    tag.src = "https://www.youtube.com/iframe_api";
-    document.head.appendChild(tag);
-
-    window.onYouTubeIframeAPIReady = function () {
-      player = new YT.Player("player", {
-        height: "100%",
-        width: "100%",
-        playerVars: {
-          playsinline: 1,
-          rel: 0,
-          modestbranding: 1
-        },
-        events: {
-          onReady: () => {
-            isPlayerReady = true;
-            if (currentIndex >= 0 && queue[currentIndex]) {
-              player.loadVideoById(queue[currentIndex].id);
-            }
-          },
-          onStateChange: onPlayerStateChange,
-          onError: onPlayerError
-        }
-      });
-    };
-
-    function onPlayerStateChange(event) {
-      if (event.data === YT.PlayerState.ENDED && autoPlayEnabled) {
-        playNext();
-      }
-    }
-
-    function onPlayerError() {
-      if (autoPlayEnabled && queue.length > currentIndex + 1) {
-        document.getElementById("nowTitle").textContent = "Video restringido, saltando al siguiente...";
-        setTimeout(playNext, 1200);
-      }
-    }
-
-    // =====================================================================
-    // 3. BÚSQUEDA DIRECTA HACIA LA ABA LIMPIA
-    // =====================================================================
-    async function searchAndOpenCleanTab(query) {
-      openCleanTab();
-      document.getElementById("innerSearchInput").value = query;
-      document.getElementById("playerListHeading").textContent = `Buscando "${query}"...`;
-      const listContainer = document.getElementById("playerQueueList");
-      listContainer.innerHTML = '<div class="status-msg">Buscando videos en YouTube...</div>';
-
-      try {
-        const response = await fetch(`/api/search?q=${encodeURIComponent(query)}`);
-        const data = await response.json();
-
-        if (!response.ok) {
-          listContainer.innerHTML = `<div class="status-msg">⚠️ ${escapeHTML(data.error || "Error en la búsqueda.")}</div>`;
-          return;
-        }
-
-        const results = (data.items || []).map((item) => ({
-          id: item.id,
-          title: decodeHTML(item.title),
-          channel: item.channel,
-          thumbnail: item.thumbnail
-        }));
-
-        if (results.length === 0) {
-          document.getElementById("playerListHeading").textContent = "Sin resultados";
-          listContainer.innerHTML = '<div class="status-msg">No se encontraron videos para esa búsqueda.</div>';
-          return;
-        }
-
-        queue = results;
-        document.getElementById("playerListHeading").textContent = `Resultados para "${query}" (${queue.length})`;
-        playTrackAt(0);
-      } catch (err) {
-        listContainer.innerHTML = '<div class="status-msg">⚠️ Error de red al conectar con el servidor.</div>';
-      }
-    }
-
-    // =====================================================================
-    // 4. REPRODUCCIÓN Y GESTIÓN DE LISTA EN ABA 2
-    // =====================================================================
-    function startCourseList(list, index) {
-      queue = [...list];
-      openCleanTab();
-      document.getElementById("playerListHeading").textContent = `Lista de reproducción (${queue.length})`;
-      playTrackAt(index);
-    }
-
-    function playTrackAt(index) {
-      if (index < 0 || index >= queue.length) return;
-      currentIndex = index;
-      const track = queue[currentIndex];
-
-      document.getElementById("nowTitle").textContent = track.title;
-      document.getElementById("nowChannel").textContent = track.channel;
-
-      document.getElementById("videoNoteInput").value = notesMap[track.id] || "";
-      document.getElementById("noteSavedTag").textContent = "";
-      updateFavButtonState(track.id);
-
-      if (isPlayerReady && player && typeof player.loadVideoById === "function") {
-        player.loadVideoById(track.id);
-      }
-
-      renderPlayerQueue();
-    }
-
-    function playNext() {
-      if (currentIndex + 1 < queue.length) {
-        playTrackAt(currentIndex + 1);
-      }
-    }
-
-    function playPrev() {
-      if (currentIndex - 1 >= 0) {
-        playTrackAt(currentIndex - 1);
-      }
-    }
-
-    function renderPlayerQueue() {
-      const container = document.getElementById("playerQueueList");
-      container.innerHTML = "";
-
-      queue.forEach((video, idx) => {
-        const isCurrent = idx === currentIndex;
-        const card = document.createElement("div");
-        card.className = "video-card";
-        if (isCurrent) card.style.borderColor = "var(--primary)";
-
-        card.innerHTML = `
-          <div class="thumb-box">
-            <img src="${video.thumbnail}" alt="" loading="lazy" />
-            <div class="play-badge">${isCurrent ? "❚❚" : "▶"}</div>
-          </div>
-          <div class="video-info">
-            <h3>${isCurrent ? "▶ " : ""}${escapeHTML(video.title)}</h3>
-            <p>${escapeHTML(video.channel)}</p>
-          </div>
-        `;
-
-        card.onclick = () => playTrackAt(idx);
-        container.appendChild(card);
-      });
-    }
-
-    // =====================================================================
-    // 5. CATÁLOGO PRECARGADO Y FAVORITOS EN ABA 1
-    // =====================================================================
     function renderHomeCourses() {
       const container = document.getElementById("coursesList");
       document.getElementById("favCount").textContent = favorites.length;
@@ -1011,8 +601,8 @@
           <button class="mini-btn" title="Guardar">${isFav ? "★" : "☆"}</button>
         `;
 
-        card.querySelector(".thumb-box").onclick = () => startCourseList(listToShow, idx);
-        card.querySelector(".video-info").onclick = () => startCourseList(listToShow, idx);
+        card.querySelector(".thumb-box").onclick = () => goToPlayerList(listToShow, idx);
+        card.querySelector(".video-info").onclick = () => goToPlayerList(listToShow, idx);
         card.querySelector(".mini-btn").onclick = (e) => {
           e.stopPropagation();
           toggleFavorite(course);
@@ -1031,33 +621,8 @@
       }
       localStorage.setItem("sf_favorites", JSON.stringify(favorites));
       renderHomeCourses();
-      if (queue[currentIndex]?.id === video.id) {
-        updateFavButtonState(video.id);
-      }
     }
 
-    function updateFavButtonState(videoId) {
-      const isFav = favorites.some((f) => f.id === videoId);
-      const btn = document.getElementById("saveCurrentFavBtn");
-      btn.textContent = isFav ? "★ Guardado" : "☆ Guardar";
-      btn.classList.toggle("active", isFav);
-    }
-
-    // Notas locales
-    document.getElementById("videoNoteInput").addEventListener("input", (e) => {
-      const track = queue[currentIndex];
-      if (!track) return;
-      const text = e.target.value;
-      if (text.trim()) {
-        notesMap[track.id] = text;
-      } else {
-        delete notesMap[track.id];
-      }
-      localStorage.setItem("sf_notes", JSON.stringify(notesMap));
-      document.getElementById("noteSavedTag").textContent = "Guardado ✓";
-    });
-
-    // Filtros de categorías en Aba 1
     document.querySelectorAll("[data-cat]").forEach((btn) => {
       btn.onclick = () => {
         document.querySelectorAll("[data-cat]").forEach((b) => b.classList.remove("active"));
@@ -1067,105 +632,14 @@
       };
     });
 
-    // =====================================================================
-    // 6. EVENTOS DE BÚSQUEDA, CONTROLES Y TEMPORIZADOR
-    // =====================================================================
-    document.getElementById("homeSearchForm").addEventListener("submit", (e) => {
-      e.preventDefault();
-      const q = document.getElementById("homeSearchInput").value.trim();
-      if (q) searchAndOpenCleanTab(q);
-    });
-
-    document.getElementById("innerSearchForm").addEventListener("submit", (e) => {
-      e.preventDefault();
-      const q = document.getElementById("innerSearchInput").value.trim();
-      if (q) searchAndOpenCleanTab(q);
-    });
-
-    document.getElementById("nextBtn").onclick = playNext;
-    document.getElementById("prevBtn").onclick = playPrev;
-
-    document.getElementById("playPauseBtn").onclick = () => {
-      if (!isPlayerReady || !player) return;
-      const state = player.getPlayerState();
-      if (state === YT.PlayerState.PLAYING) {
-        player.pauseVideo();
-      } else {
-        player.playVideo();
-      }
-    };
-
-    document.getElementById("autoPlayBtn").onclick = (e) => {
-      autoPlayEnabled = !autoPlayEnabled;
-      e.target.textContent = autoPlayEnabled ? "🔁 Auto: ON" : "🔁 Auto: OFF";
-      e.target.classList.toggle("active", autoPlayEnabled);
-    };
-
-    document.getElementById("saveCurrentFavBtn").onclick = () => {
-      const track = queue[currentIndex];
-      if (track) toggleFavorite(track);
-    };
-
-    // Temporizador
-    const timerModal = document.getElementById("timerModal");
-    const timerBtn = document.getElementById("openTimerBtn");
-
-    function startSleepTimer(minutes) {
-      clearInterval(sleepTimerId);
-      sleepRemainingSec = minutes * 60;
-      updateTimerLabel();
-      timerModal.classList.remove("open");
-
-      sleepTimerId = setInterval(() => {
-        sleepRemainingSec--;
-        if (sleepRemainingSec <= 0) {
-          clearInterval(sleepTimerId);
-          sleepTimerId = null;
-          timerBtn.textContent = "⏱ Temporizador: OFF";
-          if (isPlayerReady && player && typeof player.pauseVideo === "function") {
-            player.pauseVideo();
-          }
-          document.getElementById("nowTitle").textContent = "⏸ Pausado por temporizador";
-        } else {
-          updateTimerLabel();
-        }
-      }, 1000);
-    }
-
-    function updateTimerLabel() {
-      const m = Math.floor(sleepRemainingSec / 60);
-      const s = String(sleepRemainingSec % 60).padStart(2, "0");
-      timerBtn.textContent = `⏱ ${m}:${s}`;
-    }
-
-    timerBtn.onclick = () => timerModal.classList.add("open");
-    document.getElementById("closeTimerModalBtn").onclick = () => timerModal.classList.remove("open");
-    document.getElementById("cancelTimerBtn").onclick = () => {
-      clearInterval(sleepTimerId);
-      sleepTimerId = null;
-      timerBtn.textContent = "⏱ Temporizador: OFF";
-      timerModal.classList.remove("open");
-    };
-    document.querySelectorAll("[data-mins]").forEach((btn) => {
-      btn.onclick = () => startSleepTimer(Number(btn.dataset.mins));
-    });
-
-    // Modal legal
     const legalModal = document.getElementById("legalModal");
     document.getElementById("footerLegalLink").onclick = () => legalModal.classList.add("open");
     document.getElementById("closeLegalBtn").onclick = () => legalModal.classList.remove("open");
-
-    function decodeHTML(str) {
-      const txt = document.createElement("textarea");
-      txt.innerHTML = str;
-      return txt.value;
-    }
 
     function escapeHTML(str) {
       return str.replace(/[&<>"']/g, (m) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[m]));
     }
 
-    // Cargar catálogo precargado al iniciar
     renderHomeCourses();
   </script>
 </body>
